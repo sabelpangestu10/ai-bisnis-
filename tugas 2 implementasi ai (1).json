@@ -1,0 +1,278 @@
+{
+  "name": "tugas 2 implementasi ai",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.kle.ai/api/v1/jobs/recordInfo",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{$json.data.taskId}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {$node[\"Submit Text Prompt untuk generate Gambar\"].$json}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -496,
+        16
+      ],
+      "id": "edb9c633-9910-4a03-87f8-8f6b70f33ade",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4e3ffabc-9982-4c15-9c33-7bf60946df99",
+              "leftValue": "success",
+              "rightValue": "={{$json.data.state}}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -288,
+        16
+      ],
+      "id": "3d02d345-d7fb-4d26-a13e-4b51bf825813",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "const result = JSON.parse($json.data.resultJson);\n\nreturn [{\n  ImageUrl: result.resultUrls?.[0] || null\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        16
+      ],
+      "id": "a99cb01e-d1b6-4bcf-9d7a-9f3c5dd6b27e",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        240,
+        16
+      ],
+      "id": "21771d79-8e46-4723-ac37-bd7bbc1b61ff",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "5601608681",
+        "binaryData": true,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "1bae4e22-36a4-470f-a5c9-2b3ee70036f9",
+      "name": "Send a photo message",
+      "webhookId": "f1421ae5-cf75-441d-a37e-d16d8d8cfce9",
+      "credentials": {
+        "telegramApi": {
+          "id": "Gvt3VtVslBtKzMbW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer  {{ $json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"prompt\":\"{{$json['prompt']}}\",\n  \"taskType\":\"IMAGE\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -912,
+        16
+      ],
+      "id": "a3f0afc8-fdda-4c38-9ab0-5d33416557f3",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "formTitle": "Generate gambar",
+        "formDescription": "Isi informasi di bawah ini untuk memulai proses generate Gambar",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "prompt"
+            },
+            {
+              "fieldLabel": "tasktype"
+            },
+            {
+              "fieldLabel": "api_key"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -1120,
+        16
+      ],
+      "id": "a1ee2244-3dd7-4551-bb82-654a369886ec",
+      "name": "On form submission1",
+      "webhookId": "27bbedee-68d5-46b0-be6e-2e8a595e1844"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -704,
+        16
+      ],
+      "id": "5d4e67ed-a321-44bf-802d-5af5b13012ac",
+      "name": "Wait1",
+      "webhookId": "c1b102cf-cb73-4a7d-8926-a8075f42a299"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Send a photo message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "53facdca-ce93-49e8-af02-86ecc71e7d7a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "49a9d5408feb3a47d109653a74bdd3dac8af9c8aeb4c7b1058bcc30f55a4cbf2"
+  },
+  "id": "2hqsSM28CyOs3mze",
+  "tags": []
+}

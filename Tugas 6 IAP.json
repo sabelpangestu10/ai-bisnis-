@@ -1,0 +1,1320 @@
+{
+  "name": "Tugas 6 IAP",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1648,
+        656
+      ],
+      "id": "73d614bb-12e4-4054-aaaa-09f45f2f5a15",
+      "name": "Telegram Trigger",
+      "webhookId": "107e8775-405a-4925-9a6f-51eb21289aa4",
+      "credentials": {
+        "telegramApi": {
+          "id": "uz39YkgYP7wMplQf",
+          "name": "Telegram account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "=6694078886",
+        "text": "Systia sedang memproses request anda. harap tunggu sebentar.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1424,
+        880
+      ],
+      "id": "998193b9-46db-4399-9b1c-c100f827f080",
+      "name": "Respon Cepat",
+      "webhookId": "3d3d9374-3ef3-4ea6-a10f-77e11c366680",
+      "credentials": {
+        "telegramApi": {
+          "id": "uz39YkgYP7wMplQf",
+          "name": "Telegram account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/start",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "95503e69-026f-4a81-a643-2062b6474a6a"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "080db788-bb50-462f-b292-df82d993379f",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "title",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "87e9a6ce-9f28-4171-b346-aeb218f66fa2",
+                    "leftValue": "={{ $json.message.caption }}",
+                    "rightValue": "video",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1296,
+        640
+      ],
+      "id": "623986d7-e2fc-44f0-bac6-0b16c37f909b",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f91ffd64-a98b-4dbc-8f4b-2d7c39da3c10",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "/start",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1040,
+        496
+      ],
+      "id": "e73707f9-f9eb-4e45-9edd-b3adcf6e6e50",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "Harap ketik /start untuk memulai",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -768,
+        272
+      ],
+      "id": "8f22f68a-0f61-4b46-bb2f-274eb29c1ff3",
+      "name": "Format Salah (False)",
+      "webhookId": "0810c582-f2e4-4bfa-9d67-913d365ed7dc",
+      "credentials": {
+        "telegramApi": {
+          "id": "uz39YkgYP7wMplQf",
+          "name": "Telegram account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f4eda3d2-0070-41a7-80cd-275611633075",
+              "name": "tanggal",
+              "value": "={{ $today }}",
+              "type": "string"
+            },
+            {
+              "id": "c9307642-09c9-4b93-b26b-da5622231419",
+              "name": "tema",
+              "value": "Teknologi & Produktivitas",
+              "type": "string"
+            },
+            {
+              "id": "a7791ef3-b6a2-4cc0-a20b-d55a98d8e230",
+              "name": "waktu",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -768,
+        480
+      ],
+      "id": "f0dae1e2-7ce9-43d5-af70-5702b993e03c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Buat rencana konten harian untuk {{ $json.tanggal }} dengan tema  {{ $json.tema }} \n\nSaya mau Anda buatnya dalam bentuk nomor atau point.\n",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -464,
+        480
+      ],
+      "id": "63658190-d1b0-4e21-99a2-2a08ed952317",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        336
+      ],
+      "id": "4fb9a2e5-daf2-46bd-b19e-d88080bd2ec8",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "nNuMQNqCz1OK8M5f",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "[\n  {\n    \"time_slot\": \"\",\n    \"title\": \"\",\n    \"platforms\": [],\n    \"focus\": \"\",\n    \"ideas\": []\n  }\n]\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -320,
+        336
+      ],
+      "id": "93ba064f-219f-4a74-9e88-71b2cd9a79e5",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        304,
+        400
+      ],
+      "id": "61abb14d-336d-4217-884f-01e4c9ac4292",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "chatId": "6694078886",
+        "text": "=Title: {{ $json.title }}\n\nPlatform: {{ $json.platform }}\n\nIde: {{ $json.ide }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        544,
+        432
+      ],
+      "id": "5edbd5ba-3481-4488-9755-4accd8d9c4cf",
+      "name": "Kirim Ide Ke Tim",
+      "webhookId": "8533df86-65fd-443a-8310-15240af8d1f5",
+      "credentials": {
+        "telegramApi": {
+          "id": "uz39YkgYP7wMplQf",
+          "name": "Telegram account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "92ba26c3-8a53-4669-94c0-2237b71a1ae5",
+              "name": "time_slot",
+              "value": "={{ $json.output[0].time_slot }}",
+              "type": "string"
+            },
+            {
+              "id": "4121ab94-a2e5-435c-92d0-65af6e880eed",
+              "name": "title",
+              "value": "={{ $json.output[0].title }}",
+              "type": "string"
+            },
+            {
+              "id": "81203f4b-8dde-40d4-acd0-56f30bee5d08",
+              "name": "platform",
+              "value": "={{ $json.output[0].platforms }}",
+              "type": "string"
+            },
+            {
+              "id": "ed681942-1596-4b96-b36d-5eb502c78d4d",
+              "name": "focus",
+              "value": "={{ $json.output[0].focus }}",
+              "type": "string"
+            },
+            {
+              "id": "81789df5-0ffc-4dab-822f-5419a0f2d298",
+              "name": "ide",
+              "value": "={{ $json.output[0].ideas }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "cf4cc3fa-8643-4ddd-b59e-ecd5de246b18",
+      "name": "Output1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dc38cd3f-8123-4fe5-8763-afb07bb4ac75",
+              "name": "time_slot",
+              "value": "={{ $json.output[0].time_slot }}",
+              "type": "string"
+            },
+            {
+              "id": "472d0e20-ad89-40ce-af89-046f8196ba77",
+              "name": "title",
+              "value": "={{ $json.output[0].title }}",
+              "type": "string"
+            },
+            {
+              "id": "68bee437-3e23-41b8-8340-1e5ae366fd0f",
+              "name": "platform",
+              "value": "={{ $json.output[0].platforms }}",
+              "type": "string"
+            },
+            {
+              "id": "26271c0d-f70a-4066-8d82-c3e9a160dcf8",
+              "name": "focus",
+              "value": "={{ $json.output[0].focus }}",
+              "type": "string"
+            },
+            {
+              "id": "76e97134-79a9-450c-99d3-d8c6946a454a",
+              "name": "ide",
+              "value": "={{ $json.output[0].ideas }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        160
+      ],
+      "id": "192d85e9-5bf0-494b-bce7-f75a7265f6eb",
+      "name": "Output2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ab0ffd5d-9cb4-4de8-bdee-8c2842dfda38",
+              "name": "time_slot",
+              "value": "={{ $json.output[0].time_slot }}",
+              "type": "string"
+            },
+            {
+              "id": "c96341f0-de7d-4ced-966d-a0330c5a3d83",
+              "name": "title",
+              "value": "={{ $json.output[0].title }}",
+              "type": "string"
+            },
+            {
+              "id": "5594f258-eaae-413f-a017-546abd016f15",
+              "name": "platform",
+              "value": "={{ $json.output[0].platforms }}",
+              "type": "string"
+            },
+            {
+              "id": "63d8c931-08e0-49c0-a62d-ed244e2a3a16",
+              "name": "focus",
+              "value": "={{ $json.output[0].focus }}",
+              "type": "string"
+            },
+            {
+              "id": "84a1fbed-e775-4473-9b94-49d0f53bf558",
+              "name": "ide",
+              "value": "={{ $json.output[0].ideas }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        320
+      ],
+      "id": "64c1ec52-ea84-4415-b6bb-7b5e9257aae7",
+      "name": "Output3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f175dc2e-0de4-44d3-a3b9-fb575c8fe2e1",
+              "name": "time_slot",
+              "value": "={{ $json.output[0].time_slot }}",
+              "type": "string"
+            },
+            {
+              "id": "0faa5390-5712-4404-8dd5-623c153aad85",
+              "name": "title",
+              "value": "={{ $json.output[0].title }}",
+              "type": "string"
+            },
+            {
+              "id": "37ddfbe9-dace-4272-ae66-527221a44df6",
+              "name": "platform",
+              "value": "={{ $json.output[0].platforms }}",
+              "type": "string"
+            },
+            {
+              "id": "9b125818-5dfe-476d-ae5d-bf47af7b9dc1",
+              "name": "focus",
+              "value": "={{ $json.output[0].focus }}",
+              "type": "string"
+            },
+            {
+              "id": "89684c14-ca7b-4e23-9004-921f04397be5",
+              "name": "ide",
+              "value": "={{ $json.output[0].ideas }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        480
+      ],
+      "id": "4618141c-bc55-4b21-857d-67f580e7cdf6",
+      "name": "Output4"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.document?.file_id || $json.message.photo?.reverse()[0]?.file_id || $json.message.video?.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1040,
+        960
+      ],
+      "id": "03ddee1f-6597-4b1b-966d-5ce4cefbdaa1",
+      "name": "Get a file",
+      "webhookId": "131cc823-3621-4392-8f72-fe1e37780088",
+      "credentials": {
+        "telegramApi": {
+          "id": "uz39YkgYP7wMplQf",
+          "name": "Telegram account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "text": "Analyze the image and generate a detailed, cinematic video prompt suitable for Google gemini-2.5. Include:\n- Subject and action (e.g., \"a cat jumping on a sofa\")\n- Setting and background\n- Time of day, lighting, mood\n- Camera movement (e.g., slow zoom, tracking shot)\n- Visual style (e.g., photorealistic, cartoon, cinematic)\n\nKeep it concise (1–2 sentences). Output ONLY the prompt text, no explanation.",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -816,
+        960
+      ],
+      "id": "a5d1bdec-273f-4fe2-a76d-5ead52eb5ae5",
+      "name": "Analyze an image",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "nNuMQNqCz1OK8M5f",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 19d6b5b8020febc9531b8bf19c41ea2b"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"grok-imagine/image-to-video\",\n  \"callBackUrl\": \"https://your-domain.com/api/callback\",\n  \"input\": {\n    \"task_id\": \"task_grok_12345678\",\n    \"image_urls\": [\n      \"https://www.image2url.com/r2/default/images/1777132304277-79d28014-9c6b-4866-bd7b-2c15ca7d60ee.jpg\"\n    ],\n    \"prompt\": \"{{ $json.content.parts[0].text }}\",\n    \"mode\": \"normal\",\n    \"duration\": \"6\",\n    \"resolution\": \"480p\",\n    \"aspect_ratio\": \"16:9\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -608,
+        960
+      ],
+      "id": "a3e22a67-1f5a-4005-a0dd-6d16ac738d8e",
+      "name": "HTTP Request5"
+    },
+    {
+      "parameters": {
+        "amount": 50
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        960
+      ],
+      "id": "40579b03-39e4-44e9-b7b8-40ede7526118",
+      "name": "Wait2",
+      "webhookId": "bfb0a5d9-ff5a-4b1d-a37b-6c9d0ebceeb2"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/jobs/recordInfo",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $json.data.taskId }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 19d6b5b8020febc9531b8bf19c41ea2b"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -192,
+        960
+      ],
+      "id": "30adfeed-0544-48a4-8828-61185bec4a9e",
+      "name": "HTTP Request6"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ambil datanya dengan aman\nconst rawData = $json.data?.resultJson;\n\n// 1. Cek apakah data ada dan tipenya string (JSON)\nif (!rawData || typeof rawData !== 'string' || rawData.trim() === \"\") {\n  // Kalau kosong, balikin array kosong supaya n8n berhenti dengan sopan (bukan error)\n  // Atau balikin null supaya lo tau ini belum siap\n  return []; \n}\n\ntry {\n  // 2. Coba parse JSON\n  const result = JSON.parse(rawData);\n  \n  // 3. Ambil URL video/gambar\n  const url = result.resultUrls?.[0];\n\n  if (!url) return [];\n\n  return [{\n    videoUrl: url\n  }];\n} catch (e) {\n  // 4. Kalau format JSON rusak, jangan bikin workflow merah\n  console.error(\"JSON Error:\", e.message);\n  return [];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        32,
+        960
+      ],
+      "id": "7caad9fa-f8c3-4916-a4d3-923c66b98f93",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.videoUrl }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        256,
+        960
+      ],
+      "id": "05e64e2e-2837-484f-9585-5bd0f0d7b072",
+      "name": "HTTP Request7"
+    },
+    {
+      "parameters": {
+        "name": "Hasil Video",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1HWbshICnqC4Mu5Ib8SCMEiIoirs1HMkN",
+          "mode": "list",
+          "cachedResultName": "tugas 6 iap",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1HWbshICnqC4Mu5Ib8SCMEiIoirs1HMkN"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        480,
+        960
+      ],
+      "id": "73f35099-914e-4e26-944a-50b5e30d198a",
+      "name": "Upload file2",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "jizxUP9tq762Swrr",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f4eda3d2-0070-41a7-80cd-275611633075",
+              "name": "tanggal",
+              "value": "={{ $today }}",
+              "type": "string"
+            },
+            {
+              "id": "c9307642-09c9-4b93-b26b-da5622231419",
+              "name": "tema",
+              "value": "Teknologi & Produktivitas",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1056,
+        656
+      ],
+      "id": "8b75d6c7-21bc-40b3-af2b-0a8841280771",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Buat rencana konten harian untuk {{ $json.tanggal }} dengan tema {{ $json.tema }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -848,
+        656
+      ],
+      "id": "c38b5bc0-e801-4cbb-ad56-4ae466a4252c",
+      "name": "Basic LLM Chain2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dc9ea6c5-626c-475b-be5b-796d9578cc68",
+              "name": "judul_pilihan",
+              "value": "={{ $json.output[0].title || $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -512,
+        656
+      ],
+      "id": "daba12d3-093f-41f6-8bf0-8490935ea510",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 19d6b5b8020febc9531b8bf19c41ea2b"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"grok-imagine/text-to-image\",\n  \"input\": {\n    \"prompt\": \"{{ $json.judul_pilihan }}\",\n    \"aspect_ratio\": \"3:2\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -288,
+        656
+      ],
+      "id": "4ddc1b80-b38e-4616-abdd-8edbe22e5a30",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        656
+      ],
+      "id": "5589e293-a011-482e-ad78-425b59ecbeac",
+      "name": "Wait1",
+      "webhookId": "e67c9ecc-ab31-4bee-ba61-7866666f8535"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/jobs/recordInfo",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $node[\"HTTP Request3\"].json.data.taskId }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 19d6b5b8020febc9531b8bf19c41ea2b"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        144,
+        656
+      ],
+      "id": "8ef5d202-dd0f-4ccc-87cf-5f9b6ae0c2f0",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawData = $json.data?.resultJson;\nif (!rawData) return [{ img1: null }];\n\ntry {\n  const result = JSON.parse(rawData);\n  const urls = result.resultUrls || [];\n  return [{ \n    img1: urls[0] || null, \n    img2: urls[1] || null, \n    img3: urls[2] || null, \n    img4: urls[3] || null \n  }];\n} catch (e) {\n  return [{ error: \"JSON format invalid\" }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        656
+      ],
+      "id": "12a2bba6-625e-43bd-8214-2d523441a5d1",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const urls = [$json.img1, $json.img2, $json.img3, $json.img4].filter(u => u && u.startsWith('http'));\nreturn urls.map(url => ({ json: { url } }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        656
+      ],
+      "id": "a2d8c36f-7a47-4679-b7d8-1baa52cd9c03",
+      "name": "Code in JavaScript4"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        768,
+        656
+      ],
+      "id": "04ff24be-39e1-4143-8783-89578e4bf919",
+      "name": "HTTP Request8"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "6694078886",
+        "binaryData": true,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        960,
+        656
+      ],
+      "id": "1ee2d3b4-8c09-400a-aeff-d8a9bc1dc3ce",
+      "name": "Send a photo message1",
+      "webhookId": "ebd2b234-8169-4318-9b43-6281e18e76d7",
+      "credentials": {
+        "telegramApi": {
+          "id": "uz39YkgYP7wMplQf",
+          "name": "Telegram account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "[\n  {\n    \"time_slot\": \"\",\n    \"title\": \"\",\n    \"platforms\": [],\n    \"focus\": \"\",\n    \"ideas\": []\n  }\n]"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -704,
+        832
+      ],
+      "id": "ef2e0d84-d276-464d-ac5c-2e0b7fe53d92",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        832
+      ],
+      "id": "cf2c9e62-c723-4336-bd2a-8782f181cd00",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "kf4mhhabGZmfHz3X",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Respon Cepat",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Salah (False)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Output1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Output2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Output3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Output4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Kirim Ide Ke Tim",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Output3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Output4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Analyze an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze an image": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request5": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request6": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request7": {
+      "main": [
+        [
+          {
+            "node": "Upload file2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request4": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript4": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request8": {
+      "main": [
+        [
+          {
+            "node": "Send a photo message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "52dd37e8-3786-484c-84fd-27d084ccf756",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "49a9d5408feb3a47d109653a74bdd3dac8af9c8aeb4c7b1058bcc30f55a4cbf2"
+  },
+  "id": "sp3lcaQrGStkTw0D",
+  "tags": []
+}

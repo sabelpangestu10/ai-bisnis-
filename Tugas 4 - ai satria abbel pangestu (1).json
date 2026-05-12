@@ -1,0 +1,295 @@
+{
+  "name": "Tugas 4 - ai satria abbel pangestu",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        128
+      ],
+      "id": "c95729bb-c57b-4262-a0e8-a78ff51468df",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "19kex61OdvbrHMAMORiTq4_PXo4F7V7g8uuC1dxeuzC0",
+          "mode": "list",
+          "cachedResultName": "dummy_laporan_keuangan",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19kex61OdvbrHMAMORiTq4_PXo4F7V7g8uuC1dxeuzC0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 167987172,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19kex61OdvbrHMAMORiTq4_PXo4F7V7g8uuC1dxeuzC0/edit#gid=167987172"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3b9e2d65-8d9b-437a-a451-15cde7d34e17",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "C3pAf3c7Mde4B9bN",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1qS0IvLGetMSQ_aGl83J_ujIWUUa-ZxXj",
+          "mode": "list",
+          "cachedResultName": "Dummy Rekonsiliasi - Sheet2.csv",
+          "cachedResultUrl": "https://drive.google.com/file/d/1qS0IvLGetMSQ_aGl83J_ujIWUUa-ZxXj/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        0,
+        224
+      ],
+      "id": "16bd2e8c-dbe3-46fb-8684-72543ae40fe3",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "jizxUP9tq762Swrr",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "headerRow": true
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        224
+      ],
+      "id": "0fda7d82-2675-463a-8688-d613d770c187",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n\n  let tgl = item.json[\"Tanggal Transaksi\"];\n  let nominal = item.json[\"Jumlah (IDR)\"];\n\n  // ubah DD/MM/YYYY ke YYYY-MM-DD\n  let parts = String(tgl).split('/');\n  let cleanDate = `${parts[2]}-${parts[1]}-${parts[0]}`;\n\n  // hapus non angka\n  let cleanAmount = String(nominal).replace(/\\D/g,'');\n\n  return {\n    json:{\n      source: 'INTERNAL',\n      row_number: item.json[\"row_number\"],\n      id_referensi: item.json[\"ID Referensi\"],\n      tanggal: cleanDate,\n      nominal: cleanAmount,\n      match_key: cleanDate + '_' + cleanAmount,\n      deskripsi: item.json[\"Deskripsi\"],\n      tipe_transaksi: item.json[\"Tipe Transaksi\"],\n      status_internal: item.json[\"Status\"],\n      nama_vendor: item.json[\"Nama Klien/Vendor\"],\n      kategori: item.json[\"Kategori\"]\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e33d85b3-5d1f-47a8-9911-f76571edb237",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n\n  let tgl = item.json[\"Tanggal Bank\"];\n  let nominal = item.json[\"Jumlah (IDR)\"];\n\n  // ubah DD/MM/YYYY ke YYYY-MM-DD\n  let parts = tgl.split('/');\n  let cleanDate = `${parts[2]}-${parts[1]}-${parts[0]}`;\n\n  // hapus non angka\n  let cleanAmount = String(nominal).replace(/\\D/g,'');\n\n  return {\n    json:{\n      source: 'BANK',\n      tanggal: cleanDate,\n      nominal: cleanAmount,\n      match_key: cleanDate + '_' + cleanAmount,\n      deskripsi: item.json[\"Deskripsi Transaksi\"],\n      status_bank: item.json[\"Status\"]\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        224
+      ],
+      "id": "1665ebb9-145c-471e-80b8-9f809103a9d0",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        528,
+        16
+      ],
+      "id": "2324c4b9-4df1-4c14-a671-b3adc419a3c8",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst grouped = {};\nconst results = [];\n\n// GROUP DATA\nfor (const item of items) {\n  const data = item.json;\n  const key = data.match_key;\n\n  if (!grouped[key]) {\n    grouped[key] = [];\n  }\n\n  grouped[key].push(data);\n}\n\n// ANALISA\nfor (const key in grouped) {\n\n  const group = grouped[key];\n\n  const internal = group.find(x => x.source === \"INTERNAL\");\n  const bank = group.find(x => x.source === \"BANK\");\n\n  let status = \"\";\n  let pesan = \"\";\n\n  if (internal && bank) {\n    status = \"MATCHED\";\n    pesan = \"✅ Data cocok\";\n  } \n  else if (internal && !bank) {\n    status = \"UNRECORDED BANK\";\n    pesan = \"⚠️ Ada di Internal, tidak ada di Bank\";\n  } \n  else if (!internal && bank) {\n    status = \"UNRECORDED INTERNAL\";\n    pesan = \"⚠️ Ada di Bank, tidak ada di Internal\";\n  }\n\n  const ref = internal || bank;\n\n  results.push({\n    json: {\n      status: status,\n      pesan: pesan,\n      tanggal: ref?.tanggal || \"-\",\n      nominal: ref?.nominal || 0,\n      ref_internal: internal?.id_referensi || \"-\",\n      ref_bank: bank?.id_referensi || \n          bank?.ref_bank || \n          bank?.deskripsi || \n          \"-\",\n      deskripsi: ref?.deskripsi || \"-\",\n      match_key: key\n    }\n  });\n}\n\nreturn results;\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        736,
+        16
+      ],
+      "id": "803fefea-3ef2-4eec-a623-167f833bb3a0",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "chatId": "6694078886",
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1168,
+        16
+      ],
+      "id": "f47fff9d-ba8f-49e1-a707-d99e3ef90afc",
+      "name": "Send a text message",
+      "webhookId": "825292d2-ad88-4c3a-b6c3-ae35c22c803e",
+      "credentials": {
+        "telegramApi": {
+          "id": "uz39YkgYP7wMplQf",
+          "name": "Telegram account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.all().map(item => item.json);\n\n// Summary\nconst total = data.length;\nconst matchedList = data.filter(x => x.status === \"MATCHED\");\nconst mismatchList = data.filter(x => x.status !== \"MATCHED\");\n\nconst matched = matchedList.length;\nconst mismatch = mismatchList.length;\n\n// Ambil 1 contoh\nconst a = matchedList[0];\nconst b = mismatchList[0];\n\n// PESAN 1\nconst pesan1 = `📊 LAPORAN REKONSILIASI\n\n📁 Total Data: ${total}\n✅ MATCHED: ${matched}\n⚠️ MISMATCH: ${mismatch}\n\n🕒 ${new Date().toLocaleString(\"id-ID\")}\n`;\n\n// Function format\nfunction formatItem(item, title) {\n  if (!item) return `${title}\\nTidak ada data\\n`;\n\n  return `${title}\n\n📅 Tanggal: ${item.tanggal || \"-\"}\n💰 Nominal: Rp ${Number(item.nominal || 0).toLocaleString(\"id-ID\")}\n\n⚠️ Status: ${item.status || \"-\"}\n📝 Ket: ${item.pesan || \"-\"}\n\n🔍 Ref Internal: ${item.ref_internal || \"-\"}\n🏦 Ref Bank: ${item.ref_bank || \"-\"}\n\nℹ️ Desc: ${item.deskripsi || \"-\"}\n\n`;\n}\n\n// PESAN 2\nconst pesan2 =\nformatItem(a, \"✅ CONTOH DATA MATCHED\") +\n\"\\n\" +\nformatItem(b, \"⚠️ CONTOH DATA MISMATCH\");\n\n// Return 2 pesan\nreturn [\n  { json: { text: pesan1 } },\n  { json: { text: pesan2 } }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        16
+      ],
+      "id": "3b5eee55-f9bc-4d4b-afc8-2468eaa820b7",
+      "name": "Code in JavaScript3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "249825e3-b36c-4ee2-aead-52df93956be2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "49a9d5408feb3a47d109653a74bdd3dac8af9c8aeb4c7b1058bcc30f55a4cbf2"
+  },
+  "id": "BZF11DjK4bVcf61p",
+  "tags": []
+}

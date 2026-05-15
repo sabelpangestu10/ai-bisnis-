@@ -1,0 +1,420 @@
+{
+  "name": "Tugas 7 - AI untuk Keuangan - Satria Abbel Pangestu",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "6694078886",
+        "text": "=📊 LAPORAN SENTIMEN KRIPTO HARIAN  \n\n{{$json.text}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1024,
+        320
+      ],
+      "id": "3b2fcc85-3e79-4a81-afaf-f5ae8d7e3ef2",
+      "name": "Send a text message",
+      "webhookId": "c50e44e8-4ee2-455b-b8d4-05aa2ab0f265",
+      "credentials": {
+        "telegramApi": {
+          "id": "uz39YkgYP7wMplQf",
+          "name": "Telegram account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Buat kesimpulan pasar kripto hari ini berdasarkan data berikut:\n\nTotal tweet: {{$json.total}}\nPositive: {{$json.positive}} ({{$json.persenPositif}}%)\nNegative: {{$json.negative}} ({{$json.persenNegative}}%)\nNeutral: {{$json.neutral}} ({{$json.persenNeutral}}%)\n\nBuat ringkasan singkat dalam Bahasa Indonesia.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        624,
+        320
+      ],
+      "id": "e6730b40-230f-4109-8158-d9ec977888f9",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "jsCode": "let positive = 0;\nlet negative = 0;\nlet neutral = 0;\n\nfor (const item of items) {\n  const s = item.json.Sentiment;\n\n  if (s === \"Positive\") positive++;\n  else if (s === \"Negative\") negative++;\n  else neutral++;\n}\n\nconst total = positive + negative + neutral;\n\nreturn [{\n  json: {\n    total,\n    positive,\n    negative,\n    neutral,\n    persenPositif: ((positive / total) * 100).toFixed(1),\n    persenNegative: ((negative / total) * 100).toFixed(1),\n    persenNeutral: ((neutral / total) * 100).toFixed(1)\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        320
+      ],
+      "id": "286e3eeb-5e1c-416c-9259-8e831d309207",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1guj_YESpu7J3dZLK01p6EGtXWPlJ2WKGs7myc49MNws",
+          "mode": "list",
+          "cachedResultName": "Analisis Sentimen Crypto",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1guj_YESpu7J3dZLK01p6EGtXWPlJ2WKGs7myc49MNws/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Data Mentah",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1guj_YESpu7J3dZLK01p6EGtXWPlJ2WKGs7myc49MNws/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        320
+      ],
+      "id": "84611f11-1216-4462-8f0f-9d7974b61c99",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "C3pAf3c7Mde4B9bN",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        320
+      ],
+      "id": "46e0136c-e931-46c2-aa6b-5a86b0d10945",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "958bec7a-3959-483b-ac96-0853c0466d7b",
+              "name": "text",
+              "value": "={\n  \"BTC\": {\n    \"total\": 92,\n    \"bullish\": 32,\n    \"bearish\": 34,\n    \"neutral\": 26,\n    \"avg_compound\": -0.013,\n    \"signal\": \"NEUTRAL\",\n    \"scraped_at\": \"2026-04-22T09:15:43.281290\"\n  },\n  \"ETH\": {\n    \"total\": 72,\n    \"bullish\": 31,\n    \"bearish\": 29,\n    \"neutral\": 12,\n    \"avg_compound\": -0.0005,\n    \"signal\": \"NEUTRAL\",\n    \"scraped_at\": \"2026-04-22T09:15:43.281586\"\n  }\n}",
+              "type": "string"
+            },
+            {
+              "id": "c3511b69-4b45-4c9b-89c1-b7d85a694618",
+              "name": "id",
+              "value": "1001",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "27a53512-1586-47c0-9d93-a8e723f36b1b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1UsH7A6ctLUTAkYB7ev1obtvykNlB8-r_v3rqcYl-imQ",
+          "mode": "list",
+          "cachedResultName": "Analisis Sentimen Crypto",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UsH7A6ctLUTAkYB7ev1obtvykNlB8-r_v3rqcYl-imQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2038380722,
+          "mode": "list",
+          "cachedResultName": "Data Mentah",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UsH7A6ctLUTAkYB7ev1obtvykNlB8-r_v3rqcYl-imQ/edit#gid=2038380722"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Waktu": "={{$now.toFormat(\"yyyy-MM-dd HH:mm:ss\")}}",
+            "Tweet ID": "={{$node[\"Edit Fields1\"].json.id}}",
+            "Text": "={{$node[\"Edit Fields1\"].json.text}}",
+            "Sentiment": "={{$json.text}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Waktu",
+              "displayName": "Waktu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tweet ID",
+              "displayName": "Tweet ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Text",
+              "displayName": "Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Sentiment",
+              "displayName": "Sentiment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        800,
+        0
+      ],
+      "id": "08752680-bfb7-4115-914a-935f17daac44",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "C3pAf3c7Mde4B9bN",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analisis sentimen tweet berikut.\n\nTweet:\n{{$json.text}}\n\nJawab HANYA satu kata:\nPositive\nNegative\nNeutral",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        416,
+        0
+      ],
+      "id": "d984db03-8abf-46b3-8b47-2f035bcff494",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "02e4c5d3-5321-4441-8169-d0c2316d9b52",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        1440
+      ],
+      "id": "06865a92-3498-4885-8492-f512013e4a87",
+      "name": "Groq Chat Model1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        352,
+        208
+      ],
+      "id": "5ea2963f-3b67-45d8-afd4-f798c8093701",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "kf4mhhabGZmfHz3X",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        560,
+        528
+      ],
+      "id": "ac37b736-c679-4923-82fe-76f2bb962d2f",
+      "name": "Groq Chat Model2",
+      "credentials": {
+        "groqApi": {
+          "id": "kf4mhhabGZmfHz3X",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0b06140f-7c56-450e-b204-8a5084a3a358",
+  "meta": {
+    "instanceId": "49a9d5408feb3a47d109653a74bdd3dac8af9c8aeb4c7b1058bcc30f55a4cbf2"
+  },
+  "id": "lBcczrbdFPy5DrWq",
+  "tags": []
+}
